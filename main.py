@@ -5,7 +5,7 @@ from pessoa import Pessoa
 conexao = pymysql.connect(
 	host='localhost',
 	user='root',
-	password='04gabriel30',
+	password='password',
 	database='pessoas',
 	charset='utf8mb4',
 	cursorclass=pymysql.cursors.DictCursor
