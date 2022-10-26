@@ -16,7 +16,7 @@ if conexao:
 	# Looping do Sistema
 	while True:
 		try:
-			print('=' * 45)
+			print('='*100)
 			print('CADASTRO DE PESSOAS')
 
 			print('''Opções
@@ -25,16 +25,23 @@ if conexao:
 			2 - Lista de Cadastros
 			3 - Busca Por Id
 			4 - Busca Por Nome
-			5 - Busca Personalizada
-			6 - Atualizar Dados
-			7 - Encerrar Programa
+			5 - Atualizar Dados
+			6 - Encerrar Programa
 			''')
 			opcao = int(input('Escolha: '))
 
-			# PUT dos dados para a tabela
+			# POST dos dados para a tabela
 			if opcao == 1:
 				while True:
-					print('='*45)
+					print('='*100)
+
+					# Entrada dos dados para cadastro
+
+					'''
+					Verificar e realizar as trativas de dados
+					Verificar sobre o sql inject
+					'''
+
 					nome = input('Informe seu nome: ')
 					idade = input('Informe sua idade[Somente Números]: ')
 					sexo = input('Informe seu sexo[Masculino/Feminino/M/F]: ')
@@ -46,31 +53,31 @@ if conexao:
 					nome_avo1 = input('Informe o nome da sua avó: ')
 					nome_avo2 = input('Informe o nome do seu avô: ')
 
+					# Classe para validação dos dados
 					pessoa = Pessoa(nome, idade, sexo, cidade_natal, nome_mae, nome_pai, nome_irmao1, nome_irmao2, nome_avo1, nome_avo2)
 
-					with conexao:
-						with conexao.cursor() as cursor:
+					with conexao.cursor() as cursor:
 
-							# Query SQL
-							comando_sql = "INSERT INTO `tb_pessoa` (" \
-							              "`nome`," \
-							              "`idade`," \
-							              "`sexo`," \
-							              "`cidade_natal`," \
-							              "`nome_mae`," \
-							              "`nome_pai`," \
-							              "`nome_irmao1`," \
-							              "`nome_irmao2`," \
-							              "`nome_avo1`," \
-							              "`nome_avo2`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+						# Query SQL
+						comando_sql = "INSERT INTO `tb_pessoa` (" \
+						              "`nome`," \
+						              "`idade`," \
+						              "`sexo`," \
+						              "`cidade_natal`," \
+						              "`nome_mae`," \
+						              "`nome_pai`," \
+						              "`nome_irmao1`," \
+						              "`nome_irmao2`," \
+						              "`nome_avo1`," \
+						              "`nome_avo2`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
-							# Executa o comando SQL
-							cursor.execute(comando_sql, (pessoa.nome, pessoa.idade, pessoa.sexo, pessoa.cidade_natal,
-							                             pessoa.nome_mae, pessoa.nome_pai, pessoa.nome_irmao1, pessoa.nome_irmao2,
-							                             pessoa.nome_avo1, pessoa.nome_avo2))
+						# Executa o comando SQL
+						cursor.execute(comando_sql, (pessoa.nome, pessoa.idade, pessoa.sexo, pessoa.cidade_natal,
+						                             pessoa.nome_mae, pessoa.nome_pai, pessoa.nome_irmao1, pessoa.nome_irmao2,
+						                             pessoa.nome_avo1, pessoa.nome_avo2))
 
-							conexao.commit() # Salva as mudanças feitas
-							print('Cadastro realizado com sucesso!')
+						conexao.commit() # Salva as mudanças feitas
+						print('Cadastro realizado com sucesso!')
 
 					repeticao = ' '
 
@@ -82,35 +89,66 @@ if conexao:
 
 			# GET dos dados da tabela
 			if opcao == 2:
-				print('=' * 45)
-				with conexao:
-					with conexao.cursor() as cursor:
-						comando_sql = "SELECT * FROM `tb_pessoa`"
+				print('='*100)
+				with conexao.cursor() as cursor:
+					# Comando SQL a ser executado
+					comando_sql = "SELECT * FROM `tb_pessoa`"
 
-						cursor.execute(comando_sql)
-						cadastros = cursor.fetchall()
+					cursor.execute(comando_sql) # Execução do comando
+					cadastros = cursor.fetchall() # Resultado da busca
 
-						for cadastro in cadastros:
-							print(cadastro)
+					print('Lista de Cadastros:')
+					for cadastro in cadastros:
+						print(cadastro)
 
+			# GET dos dados por ID
 			if opcao == 3:
-				raise NotImplementedError('Opção ainda não implemetada')
+				print('='*100)
 
+				id = int(input('Informe o número do id que deseja recuperar os dados: '))
+
+				with conexao.cursor() as cursor:
+					# Comando SQL
+					comando_sql = "SELECT * FROM `tb_pessoa` WHERE `id` = %s"
+					cursor.execute(comando_sql, id) # Execução do comando
+					cadastro = cursor.fetchone() # Resultado da busca
+
+					if cadastro:
+						print('Resultado da Busca: ')
+						print(cadastro)
+					else:
+						print('Registro não encontrado')
+
+			# GET dos dados por nome do registro
 			if opcao == 4:
-				raise NotImplementedError('Opção ainda não implemetada')
+				print('=' * 100)
 
+				nome_busca = input('Informe o número do id que deseja recuperar os dados: ')
+
+				with conexao.cursor() as cursor:
+					# Comando SQL
+					comando_sql = "SELECT * FROM `tb_pessoa` WHERE `nome` LIKE %s"
+					cursor.execute(comando_sql, nome_busca)  # Execução do comando
+					cadastro = cursor.fetchone()  # Resultado da busca
+
+					if cadastro:
+						print('Resultado da Busca: ')
+						print(cadastro)
+					else:
+						print('Registro não encontrado')
+
+			# PUT dos dados
 			if opcao == 5:
 				raise NotImplementedError('Opção ainda não implemetada')
 
+			# Encerramento do programa
 			if opcao == 6:
-				raise NotImplementedError('Opção ainda não implemetada')
-
-			if opcao == 7:
 				break
 
 		except Exception as e:
 			print(e)
 
+	print('='*100)
 	print('FIM DO PROGRAMA!')
 
 else:
